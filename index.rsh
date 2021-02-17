@@ -77,17 +77,19 @@
 const totalTurns = 10;
 
 const ObserverInterface = {
-  getParams: Object({
+  getParams: Fun([],Object({
     payoutPerDuration: UInt,
     moveLimit: UInt,
-  }),
+  })),
   observeMove: Fun([Array(UInt, totalTurns)], Null),  
-  observeGameFinish: Fun([], Null)
+  observeGameFinish: Fun([], Null),
+  observeTurnStart: Fun([UInt], Null),
 };
 
 // TODO: Add acceptMove function and refactor confirmMove to getMove
 const PlayerInterface = {
-  confirmMove: Fun([UInt], Tuple(Bool, UInt, UInt, UInt))
+  acceptMove: Fun([UInt], Bool),
+  getMove: Fun([], Tuple( UInt, UInt, UInt))
 };
 
 export const main = Reach.App(
@@ -99,7 +101,7 @@ export const main = Reach.App(
     // TODO: Clean moveLimit in this version.
     // ! Don't touch the moveLimit instead, get rid of totalMove by making frontend more dominant
     Observer.only(() => {
-      const _params = interact.getParams;
+      const _params = interact.getParams();
       assume(_params.moveLimit > 0);
       const [payoutPerDuration, moveLimit] = declassify([_params.payoutPerDuration, _params.moveLimit]);
     });
@@ -116,36 +118,62 @@ export const main = Reach.App(
     while(game.movePlayed < totalTurns) {
         commit();
 
-        // TODO: (After interface update) Rearrange the arrow function to branch depending if player accepts or not.  
-        Player.only(() => {
-          const [_response, _move, _duration, _toPay] = interact.confirmMove(payoutPerDuration);
-          assume((_response && (_toPay > 0)) || (!_response && (_toPay == 0)));
-          const [response, move, duration, toPay] = declassify([_response, _move, _duration, _toPay]);
-        });
-        Player.publish(response, move, duration, toPay)
-          .pay(toPay);
-
-        const afterGame = {
-          moveList: response ? game.moveList.set(game.movePlayed, move) : game.moveList,
-          movePlayed: response ? add(game.movePlayed, 1) : game.movePlayed,
-          totalPayout: add(game.totalPayout, toPay)
-        };
-
+        Observer.only(()=>{interact.observeTurnStart(game.movePlayed)});
+        Observer.publish();
         commit();
 
-        Observer.only(() => {
-          if(response) {
-            interact.observeMove(afterGame.moveList);
-          }
+        // TODO: (After interface update) Rearrange the arrow function to branch depending if player accepts or not.  
+        Player.only(() => {
+          const response = declassify(interact.acceptMove(payoutPerDuration));
         });
-        Observer.publish();
 
-        //? If needed we can make it more clear that every player in the dApp observes the moveList
-        //? by committing and adding a Player.only statement
+        Player.publish(response);
 
-        game = afterGame;
+        if(response) {
+          // Player definitely sends a move a duration and to Pay
+          commit();
 
-        continue;
+          // TODO: race(Player).publish(move, duration, toPay);
+
+          Player.only(() => {
+            const [_move, _duration, _toPay] = interact.getMove();
+            assume(_move > 0 && _duration > 0 && _toPay > 0, "[ERROR] Invalid Move");
+            const [move, duration, toPay] = declassify([_move, _duration, _toPay]);
+          });
+          Player.publish(move, duration, toPay)
+            .pay(toPay);;
+
+          const afterGame = {
+            moveList: game.moveList.set(game.movePlayed, move),
+            movePlayed: add(game.movePlayed, 1),
+            totalPayout: add(game.totalPayout, toPay)
+          };
+
+          commit();
+
+          Observer.only(() => {
+            if(response) {
+              interact.observeMove(afterGame.moveList);
+            }
+          });
+          Observer.publish();  
+
+          //? If needed we can make it more clear that every player in the dApp observes the moveList
+          //? by committing and adding a Player.only statement
+
+          game = afterGame;
+
+          continue;
+        } 
+        else {
+          const afterGame = {
+            moveList: game.moveList,
+            movePlayed: add(game.movePlayed, 1),
+            totalPayout: game.totalPayout
+          };
+          game = afterGame;
+          continue;
+        }
     }
 
     transfer(balance()).to(Observer);
