@@ -68,34 +68,43 @@
   
   * For test purposes players return random numbers
   
-  TODO: Make players return single values, store it in the frontend
+  FINISHED: Make players return single values, store it in the frontend
 
-  TODO: parseCurrency
-  TODO: docker-compose
- */ 
+  FINISHED: (IMPORTANT) Make players get the list from Observer, 
+  change it and then send it back to Observer. Make interface for that
+  Make it work in the while-loop(I guess)
 
-const totalPlayers = 10;
+  FINISHED: Try to observe one move at a time (again)
+
+  FINISHED: Rethink the turn concept in the game.
+  Maybe while is looping every move.
+
+  FINISHED: (SECOND STEP) Add race to the game
+ */
+
+const timeoutBlocks = 30;
 
 const ObserverInterface = {
-  getParams: Fun([],Object({
+  getParams: Fun([], Object({
     payoutPerDuration: UInt,
     moveLimit: UInt,
   })),
-  observeMoves: Fun([Array(UInt, totalPlayers)], Null),  
+  observeMove: Fun([UInt, UInt, UInt, Bytes(32)], Null),
   observeGameFinish: Fun([], Null),
   observeTurnStart: Fun([UInt], Null),
+  observeTimeout: Fun([], Null)
 };
 
 const PlayerInterface = {
   acceptMove: Fun([UInt], Bool),
-  getMove: Fun([], Tuple( UInt, UInt, UInt))
+  getMove: Fun([], Tuple(UInt, UInt, Bytes(32))),
 };
 
 export const main = Reach.App(
   {}, [
-    ['Observer', ObserverInterface], 
-    ['class', 'Player', PlayerInterface]
-  ], 
+  ['Observer', ObserverInterface],
+  ['class', 'Player', PlayerInterface]
+],
   (Observer, Player) => {
     Observer.only(() => {
       const _params = interact.getParams();
@@ -103,74 +112,50 @@ export const main = Reach.App(
       const [payoutPerDuration, moveLimit] = declassify([_params.payoutPerDuration, _params.moveLimit]);
     });
     Observer.publish(payoutPerDuration, moveLimit);
+    require(moveLimit > 0);
 
-    require(moveLimit >= 1);
+    //commit();
 
-    var game = ({
-      moveList: Array.replicate(totalPlayers, 0),
-      movePlayed: 0,
-      totalPayout: 0
-    });
-    invariant(balance() == game.totalPayout);
-    while(game.movePlayed < moveLimit) {
-        commit();
+    const [movePlayed, totalPayout] =
+      parallel_reduce([0, 0])
+        .invariant(balance() == totalPayout)
+        .while(movePlayed < moveLimit)
+        .case(Player,
+          (() => {
+            const [_move, _duration, _name] = interact.getMove();
+            assume(_move > 0 && _duration > 0, "[ERROR] Invalid Move");
+            const [move, duration, name] = declassify([_move, _duration, _name]);
+            const response = declassify(interact.acceptMove(payoutPerDuration));
+            return ({
+              msg: [move, duration, mul(duration, payoutPerDuration), response, name],
+            });
+          }), //* Local step
+          (([m, d, tp, r, n]) => 0), //* Pay step
+          (([m, d, tp, r, n]) => { // * Consensus step
+            if (r) {
+              commit();
+              Observer.only(() => {
+                interact.observeMove(m, d, tp, n);
+              });
+              Observer.publish();
 
-        Observer.only(()=>{interact.observeTurnStart(game.movePlayed)});
-        Observer.publish();
-        commit();
-
-        Player.only(() => {
-          const response = declassify(interact.acceptMove(payoutPerDuration));
+              commit();
+              Player.only(() => { });
+              Player.publish().pay(tp);
+              return [add(movePlayed, 1), add(totalPayout, tp)];
+            } else {
+              return [movePlayed, totalPayout];
+            }
+          })
+        )
+        .timeout(timeoutBlocks, () => {
+          Observer.only(() => interact.observeTimeout());
+          Observer.publish();
+          return [movePlayed, totalPayout];
         });
 
-        Player.publish(response);
-
-        if(response) {
-          // Player definitely sends a move a duration and to Pay
-          commit();
-
-          // TODO: race(Player).publish(move, duration, toPay);
-
-          Player.only(() => {
-            const [_move, _duration, _toPay] = interact.getMove();
-            assume(_move > 0 && _duration > 0 && _toPay > 0, "[ERROR] Invalid Move");
-            const [move, duration, toPay] = declassify([_move, _duration, _toPay]);
-          });
-          Player.publish(move, duration, toPay)
-            .pay(toPay);;
-
-          const afterGame = {
-            moveList: game.moveList.set(mod(game.movePlayed, totalPlayers), move),
-            movePlayed: add(game.movePlayed, 1),
-            totalPayout: add(game.totalPayout, toPay)
-          };
-
-          commit();
-
-          Observer.only(() => {
-            if(response) {
-              interact.observeMoves(game.moveList);
-            }  
-          });
-          Observer.publish();  
-
-          //? If needed we can make it more clear that every player in the dApp observes the moveList
-          //? by committing and adding a Player.only statement
-
-          game = afterGame;
-
-          continue;
-        } 
-        else {
-          const afterGame = {
-            moveList: game.moveList,
-            movePlayed: add(game.movePlayed, 1),
-            totalPayout: game.totalPayout
-          };
-          game = afterGame;
-          continue;
-        }
-    }
+    //? If needed we can make it more clear that every player in the dApp observes the moveList
+    //? by committing and adding a Player.only statement
 
     transfer(balance()).to(Observer);
     commit();
