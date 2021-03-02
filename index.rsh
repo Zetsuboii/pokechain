@@ -112,10 +112,9 @@ export const main = Reach.App(
       const [payoutPerDuration, moveLimit] = declassify([_params.payoutPerDuration, _params.moveLimit]);
     });
     Observer.publish(payoutPerDuration, moveLimit);
-
-    commit();
-
     require(moveLimit > 0);
+
+    //commit();
 
     const [movePlayed, totalPayout] =
       parallel_reduce([0, 0])

@@ -3,20 +3,9 @@ import AppViews from './views/AppViews';
 import PlayerViews from './views/PlayerViews';
 import ObserverViews from './views/ObserverViews';
 import { renderDOM, renderView } from './views/render';
-import * as backend from './build/index.main.mjs';
-import * as reach from '@reach-sh/stdlib/ALGO';
+//import './index.css';
 
-import './App.css';
-
-/*
-  What I change to switch to ALGO
-  - import * as reach from '@reach-sh/stdlib/ALGO'; from import * as reach from '@reach-sh/stdlib/ETH';
-  - run with REACH_CONNECTOR_MODE=ALGO -> sudo REACH_CONNECTOR_MODE=ALGO ./reach react
-  - getDefaultAccount() -> newAccountFromAlgoSigner()
-
-*/
-
-const { standardUnit } = reach;
+const { standardUnit } = 'ETH';
 const defaults = { defaultFundAmt: '10', defaultWager: '3', standardUnit };
 
 class App extends React.Component {
@@ -26,7 +15,7 @@ class App extends React.Component {
   }
   async componentDidMount() {
     // Shell account
-    const acc = await reach.newAccountFromAlgoSigner();
+    const acc = 100
 
     // Get default balance and format it
     const balAtomic = await reach.balanceOf(acc);
@@ -94,6 +83,10 @@ class Player extends React.Component {
     return name;
   }
   getNameGetter(name) { this.state.resolveNameP(name); }
+
+  // seeOutcome(i) { this.setState({view: 'Done', outcome: intToOutcome[i]}); }
+  // informTimeout() { this.setState({view: 'Timeout'}); }
+  // playMove(move) { this.state.playedMove(move); }
   render() { return renderView(this, PlayerViews); }
 }
 
