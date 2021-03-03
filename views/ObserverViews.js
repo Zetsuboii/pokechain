@@ -54,7 +54,7 @@ exports.GetParams = class extends React.Component {
             <button
               className="attach-button"
               onClick={() =>
-                parent.setGameGetter({
+                parent.getParams({
                   moveLimit: this.state.moveLimit,
                   payoutPerDuration: this.state.payoutPerDuration,
                 })
@@ -70,28 +70,36 @@ exports.GetParams = class extends React.Component {
 };
 
 exports.Deploy = class extends React.Component {
+  constructor(props) {
+    super(props);
+  }
   render() {
-    const { parent, game, standardUnit } = this.props;
     return (
       <Fragment>
         <div className="container">
           <div className="row j-center flex-column w-400 m-auto mt-5">
-            <a class="subtext">Input cost (for each button press):</a>
+            <a className="subtext">Input cost (for each button press):</a>
             <div className="mt-1">
-              <strong>{game.payoutPerDuration} </strong>
-              {standardUnit}
+              <strong>{this.props.game.payoutPerDuration} </strong>
+              ETH
             </div>
-            <br /> <a class="subtext">Total Moves:</a>
-            <strong className="mt-1"> {game.moveLimit}</strong>
+            <br /> <a className="subtext">Total Moves:</a>
+            <strong className="mt-1"> {this.props.game.moveLimit}</strong>
             <br />
             <br />
-            <button className="attach-button" onClick={() => parent.deploy()}>
+            <button className="attach-button" onClick={() => this.props.parent.deploy()}>
               Deploy
             </button>
           </div>
         </div>
       </Fragment>
     );
+  }
+};
+
+exports.Empty = class extends React.Component {
+  render() {
+    return (<div />);
   }
 };
 
@@ -107,8 +115,8 @@ exports.Deploying = class extends React.Component {
   }
 };
 
-exports.WaitingForAttacher = class extends React.Component {
-  async copyToClipborad(button) {
+exports.WaitingForPlayer = class extends React.Component {
+  async copyToClipboard(button) {
     const { ctcInfoStr } = this.props;
     navigator.clipboard.writeText(ctcInfoStr);
     const origInnerHTML = button.innerHTML;
@@ -129,7 +137,7 @@ exports.WaitingForAttacher = class extends React.Component {
               Waiting for Attacher to join... <br /> Please give them this
               contract info:
               <pre className="ContractInfo">{ctcInfoStr}</pre>
-              <button onClick={(e) => this.copyToClipborad(e.currentTarget)}>
+              <button onClick={(e) => this.copyToClipboard(e.currentTarget)}>
                 Copy to clipboard
               </button>
             </h3>
@@ -144,6 +152,7 @@ exports.WaitingForAttacher = class extends React.Component {
 exports.ObserveMove = class extends React.Component {
   render() {
     const { move, duration, toPay, name } = this.props;
+    const moveList = ['Up', 'Down', 'Left', 'Right', 'A Button', 'B Button', 'Left Trigger', 'Right Trigger', 'Start', 'Select'];
     return (
       <Fragment>
         <div className="container">
@@ -151,10 +160,10 @@ exports.ObserveMove = class extends React.Component {
             <h3 className="game-finished">
               Observed the move:
               <br />
-              {move} <br />
-              {duration} <br />
-              {toPay} <br />
-              {name} <br />
+              {moveList[move - 1]} <br />
+              {duration} presses<br />
+              {toPay} ETH is paid<br />
+              by {name} <br />
             </h3>
           </div>
         </div>

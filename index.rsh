@@ -85,10 +85,9 @@
 const timeoutBlocks = 30;
 
 const ObserverInterface = {
-  getParams: Fun([], Object({
-    payoutPerDuration: UInt,
-    moveLimit: UInt,
-  })),
+  // TODO: Change to Object, update the frontend.
+  payoutPerDuration: UInt,
+  moveLimit: UInt,
   observeMove: Fun([UInt, UInt, UInt, Bytes(32)], Null),
   observeGameFinish: Fun([], Null),
   observeTurnStart: Fun([UInt], Null),
@@ -107,9 +106,12 @@ export const main = Reach.App(
 ],
   (Observer, Player) => {
     Observer.only(() => {
-      const _params = interact.getParams();
-      assume(_params.moveLimit > 0);
-      const [payoutPerDuration, moveLimit] = declassify([_params.payoutPerDuration, _params.moveLimit]);
+      // const _params = {
+      //   payoutPerDuration: interact.payoutPerDuration,
+      //   moveLimit: interact.moveLimit
+      // };
+      assume(interact.moveLimit > 0);
+      const [payoutPerDuration, moveLimit] = declassify([interact.payoutPerDuration, interact.moveLimit]);
     });
     Observer.publish(payoutPerDuration, moveLimit);
     require(moveLimit > 0);

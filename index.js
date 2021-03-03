@@ -4,7 +4,7 @@ import PlayerViews from './views/PlayerViews';
 import ObserverViews from './views/ObserverViews';
 import { renderDOM, renderView } from './views/render';
 import * as backend from './build/index.main.mjs';
-import * as reach from '@reach-sh/stdlib/ALGO';
+import * as reach from '@reach-sh/stdlib/ETH';
 
 import './App.css';
 
@@ -26,7 +26,7 @@ class App extends React.Component {
   }
   async componentDidMount() {
     // Shell account
-    const acc = await reach.newAccountFromAlgoSigner();
+    const acc = await reach.getDefaultAccount();
 
     // Get default balance and format it
     const balAtomic = await reach.balanceOf(acc);
@@ -70,9 +70,10 @@ class Player extends React.Component {
    * if yes, return a tuple starting with true
    * else return a tuple starting with false
    */
-  async acceptMove(payoutPerDuration) {
+  async acceptMove(move) {
+    console.log(move);
     const response = await new Promise(resolveResponseP => {
-      this.setState({ view: 'AcceptMove', cost: payoutPerDuration });
+      this.setState({ view: 'AcceptMove', cost: (reach.bigNumberToNumber(move)), resolveResponseP });
     });
     return response;
   }
@@ -81,16 +82,19 @@ class Player extends React.Component {
   async getMove() {
     const name = await this.getName();
     const move = await new Promise(resolveMoveP => {
-      this.setState({ view: 'GetMove', /*resolveMoveP*/ });
+      this.setState({ view: 'GetMove', resolveMoveP });
     });
+    console.log(move);
+    console.log(`${move.concat(name)}`);
     return move.concat(name);
   }
   getMoveGetter(move) { this.state.resolveMoveP(move); }
 
   async getName() {
     const name = await new Promise(resolveNameP => {
-      this.setState({ view: 'GetName', /*resolveMoveP: resolveNameP*/ });
+      this.setState({ view: 'GetName', resolveNameP });
     });
+    this.setState({ view: 'WaitingForTurn', name });
     return name;
   }
   getNameGetter(name) { this.state.resolveNameP(name); }
@@ -100,14 +104,18 @@ class Player extends React.Component {
 class Observer extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { view: 'GetParams' }
+    if (this.state === undefined) {
+      console.log("?");
+      this.state = { view: 'GetParams', game: ({}) };
+    }
   }
-  setGameGetter(game) { this.setState({ view: 'Deploy', game }); }
+  getParams(game) { console.log(game.moveLimit); this.setState({ view: 'Deploy', game: game }); }
 
   async deploy() {
     const ctc = this.props.acc.deploy(backend);
     this.setState({ view: 'Deploying', ctc });
-    this.costPerMove = reach.parseCurrency(this.state.game.payoutPerDuration); // UInt
+    this.payoutPerDuration = this.state.game.payoutPerDuration;
+    this.moveLimit = this.state.game.moveLimit;
     backend.Observer(ctc, this);
     const ctcInfoStr = JSON.stringify(await ctc.getInfo(), null, 2);
     this.setState({ view: 'WaitingForPlayer', ctcInfoStr });
@@ -116,6 +124,7 @@ class Observer extends React.Component {
   // ? Observer Interface Methods
 
   // async getParams() {
+  //   console.log('[this.getParams] Observer called');
   //   const params = await new Promise(resolveParamsP => {
   //     this.setState({ view: 'GetParams', resolveParamsP });
   //   });
@@ -124,14 +133,42 @@ class Observer extends React.Component {
   // getParamsGetter(params) { this.state.resolveParamsP(params); }
 
   observeMove(move, duration, toPay, name) {
-    console.log(`Move received.\nReceived move is: ${move}, (${duration}-${toPay}-${name})`);
+    // TODO: Type check
     this.setState({
       view: 'ObserveMove',
-      move: move,
-      duration: duration,
-      toPay: toPay,
+      move: reach.bigNumberToNumber(move),
+      duration: reach.bigNumberToNumber(duration),
+      toPay: reach.bigNumberToNumber(toPay),
       name: name
     });
+
+    // eslint-disable-next-line
+    const moveData = {
+      move: move,
+      duration: duration,
+      name: name,
+      toPay: toPay
+    };
+    // const testData = {
+    //   "userId": 7,
+    //   "id": 1,
+    //   "title": "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
+    //   "body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"
+    // };
+    const options = {
+      method: 'POST',
+      body: JSON.stringify(moveData),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    };
+    // fetch('http://127.0.0.1:5000', options)
+    //   .then(res => res.json())
+    //   .then(res => console.log(res));
+    fetch('https://pokechain-api.herokuapp.com/', options)
+      .then(res => res.json())
+      .then(res => console.log(res))
+      .catch(err => console.error(err));
   }
 
   observeTimeout() {
