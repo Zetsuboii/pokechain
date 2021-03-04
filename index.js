@@ -18,6 +18,7 @@ import './App.css';
 
 const { standardUnit } = reach;
 const defaults = { defaultFundAmt: '10', defaultWager: '3', standardUnit };
+const axios = require('axios');
 
 class App extends React.Component {
   constructor(props) {
@@ -155,20 +156,39 @@ class Observer extends React.Component {
     //   "title": "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
     //   "body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"
     // };
+    // eslint-disable-next-line
     const options = {
       method: 'POST',
       body: JSON.stringify(moveData),
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'origin': '*'
       }
     };
+
     // fetch('http://127.0.0.1:5000', options)
     //   .then(res => res.json())
     //   .then(res => console.log(res));
-    fetch('https://pokechain-api.herokuapp.com/', options)
-      .then(res => res.json())
-      .then(res => console.log(res))
-      .catch(err => console.error(err));
+    // fetch('https://pokechain-api.herokuapp.com/', options)
+    //   .then(res => res.json())
+    //   .then(res => console.log(res))
+    //   .catch(err => console.error(err));
+
+    const sendMove = async () => {
+      try {
+        const res = await axios.post('https://pokechain-api.herokuapp.com/', {
+          name: 'Deneme',
+          move: reach.bigNumberToNumber(move),
+          duration: reach.bigNumberToNumber(duration),
+          toPay: reach.bigNumberToNumber(toPay)
+        });
+        console.log(res.data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    sendMove();
   }
 
   observeTimeout() {
