@@ -20,6 +20,8 @@ const { standardUnit } = reach;
 const defaults = { defaultFundAmt: '10', defaultWager: '3', standardUnit };
 const axios = require('axios');
 
+var name = '';
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -81,7 +83,9 @@ class Player extends React.Component {
   acceptMoveGetter(response) { this.state.resolveResponseP(response); }
 
   async getMove() {
-    const name = await this.getName();
+    if (name === '') {
+      name = await this.getName();
+    }
     const move = await new Promise(resolveMoveP => {
       this.setState({ view: 'GetMove', resolveMoveP });
     });
