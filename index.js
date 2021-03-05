@@ -4,7 +4,7 @@ import PlayerViews from './views/PlayerViews';
 import ObserverViews from './views/ObserverViews';
 import { renderDOM, renderView } from './views/render';
 import * as backend from './build/index.main.mjs';
-import * as reach from '@reach-sh/stdlib/ETH';
+import * as reach from '@reach-sh/stdlib/ALGO';
 
 import './App.css';
 
