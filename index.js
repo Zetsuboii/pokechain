@@ -15,6 +15,9 @@ const { standartUnit } = reach;
 const defaults = { defaultMoveCost: '10', standartUnit };
 const axios = require('axios');
 
+// For AlgoSigner change this line to 'AlgoSigner'
+reach.setSignStrategy('mnemonic');
+
 class App extends React.Component {
     constructor(props) {
         super(props);
@@ -108,7 +111,7 @@ class Creator extends React.Component {
     constructor(props) {
         super(props);
         if (this.state === undefined) {
-            this.state = { view: 'GetParams', game: ({}) };
+            this.state = { view: 'GetParams', game: ({}), standartUnit };
         }
     }
     getParams(game) { this.setState({ view: 'Deploy', game, standartUnit }); }
