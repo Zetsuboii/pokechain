@@ -70,7 +70,7 @@ exports.FundAccount = class extends React.Component {
   }
 };
 
-exports.ObserverOrPlayer = class extends React.Component {
+exports.CreatorOrPlayer = class extends React.Component {
   render() {
     const { parent } = this.props;
     return (
@@ -85,9 +85,9 @@ exports.ObserverOrPlayer = class extends React.Component {
             <div className="mr-12 text-center">
               <button
                 className="selectButton"
-                onClick={() => parent.selectObserver()}
+                onClick={() => parent.selectCreator()}
               >
-                Observer
+                Creator
               </button>
 
               <p className="select-subtext">
@@ -103,7 +103,7 @@ exports.ObserverOrPlayer = class extends React.Component {
               </button>
 
               <p className="select-subtext">
-                Attach to the Observer's contract.
+                Attach to the Creator's contract.
               </p>
             </div>
           </div>

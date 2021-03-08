@@ -9,10 +9,10 @@ services:
     stdin_open: true
     tty: true
 
-    # Does not technically depend on ganache.
+    # Does not technically depend on algorand-devnet.
     # This is just to get it to run both.
     depends_on:
-      - ganache
+      - algorand-devnet
 
   ganache:
     image: trufflesuite/ganache-cli:v6.12.0
