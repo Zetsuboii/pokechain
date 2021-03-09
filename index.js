@@ -15,9 +15,6 @@ const { standartUnit } = reach;
 const defaults = { defaultMoveCost: '10', standartUnit };
 const axios = require('axios');
 
-// For AlgoSigner change this line to 'AlgoSigner'
-reach.setSignStrategy('mnemonic');
-
 class App extends React.Component {
     constructor(props) {
         super(props);
@@ -61,7 +58,7 @@ class App extends React.Component {
 class Player extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { view: 'Attach' };
+        this.state = { view: 'Attach', lastMove: 0 };
     }
 
     attach(ctcInfoStr) {
@@ -73,7 +70,7 @@ class Player extends React.Component {
     //? Implement backend functions - Player
     async getMove() {
         const move = await new Promise(resolveMoveP => {
-            this.setState({ view: 'GetMove', resolveMoveP });
+            this.setState({ view: 'GetMove', lastMove: this.state.lastMove, resolveMoveP });
         });
         return move;
     }
@@ -81,8 +78,9 @@ class Player extends React.Component {
 
     async seeMove(move) {
         console.log('See move is called');
-        this.setState({ view: 'SeeMove', move });
         this.sendMove(move);
+        console.log('Exited sendMove');
+        console.log(`View: ${this.state.view}`);
     }
 
     async sendMove(move) {
@@ -98,6 +96,7 @@ class Player extends React.Component {
                 }
             );
             console.log(`Response from server:\n${res.data}`);
+            this.setState({ lastMove: move });
         }
         catch (err) {
             console.error(`Error while sending the move:\n${err}`);
@@ -111,7 +110,7 @@ class Creator extends React.Component {
     constructor(props) {
         super(props);
         if (this.state === undefined) {
-            this.state = { view: 'GetParams', game: ({}), standartUnit };
+            this.state = { view: 'GetParams', game: ({}) };
         }
     }
     getParams(game) { this.setState({ view: 'Deploy', game, standartUnit }); }
@@ -133,6 +132,7 @@ class Creator extends React.Component {
         const response = await new Promise(resolveResponseP => {
             this.setState({ view: 'GetResponse', resolveResponseP });
         });
+        console.log(`Creator gave the response ${response}`)
         return response;
     }
     setResponse(response) { this.state.resolveResponseP(response) };

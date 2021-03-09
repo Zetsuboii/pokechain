@@ -82,7 +82,8 @@ exports.GetMove = class extends React.Component {
     }
 
     render() {
-        const { parent } = this.props;
+        const { parent, lastMove } = this.props;
+        const moveList = ['Up', 'Down', 'Left', 'Right', 'A Button', 'B Button', 'Left Trigger', 'Right Trigger', 'Start', 'Select'];
 
         return (
             <Fragment>
@@ -289,6 +290,9 @@ exports.GetMove = class extends React.Component {
                             Skip This Turn
                         </button>
                     </div>
+                    <p>
+                        Last Move: {lastMove == 0 ? 'Skipped' : moveList[lastMove - 1]}
+                    </p>
                 </div>
             </Fragment>
         );
@@ -297,7 +301,7 @@ exports.GetMove = class extends React.Component {
 
 exports.SeeMove = class extends React.Component {
     render() {
-        const { move } = this.props;
+        const { parent, move } = this.props;
         const moveList = ['Up', 'Down', 'Left', 'Right', 'A Button', 'B Button', 'Left Trigger', 'Right Trigger', 'Start', 'Select'];
         return (
             <Fragment>
