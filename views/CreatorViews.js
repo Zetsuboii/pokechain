@@ -1,3 +1,4 @@
+/*eslint-disable*/
 import React, { Fragment } from "react";
 const exports = {};
 
@@ -8,7 +9,7 @@ exports.Wrapper = class extends React.Component {
         const { content } = this.props;
         return (
             <div className="Observer">
-                <h2 className="header-main-sub">Creator</h2>
+                <h2 style={{ marginLeft: '50px' }} className="header-main-sub">Creator</h2>
                 {content}
             </div>
         );
@@ -29,15 +30,19 @@ exports.GetParams = class extends React.Component {
             <Fragment>
                 <div className="container">
                     <div className="row m-auto flex-column w-400">
-                        <input
-                            className="observer-input"
-                            type="number"
-                            placeholder="Cost of a Move"
-                            onChange={(e) =>
-                                this.setState({ price: e.target.value })
-                            }
-                        />
-                        {standardUnit}
+
+                        <div style={{ textAlign: 'center' }}>
+                            <input
+                                step="0.000001"
+                                className="observer-input"
+                                type="number"
+                                placeholder="Cost of a Move"
+                                onChange={(e) =>
+                                    this.setState({ price: e.target.value })
+                                }
+                                style={{ width: '100px', marginRight: '10px' }}
+                            />ALGO
+                        </div>
                         <br />
                         <button
                             className="attach-button"
@@ -64,7 +69,7 @@ exports.Deploy = class extends React.Component {
             <Fragment>
                 <div className="container">
                     <div className="row j-center flex-column w-400 m-auto mt-5">
-                        <p className="subtext">Input cost (for each button press): {game.price}{standardUnit}</p>
+                        <p className="subtext">Input cost (for each button press): {game.price} ALGO</p>
                         <br />
                         <button className="attach-button"
                             onClick={() => parent.deploy()}
@@ -141,19 +146,21 @@ exports.GetResponse = class extends React.Component {
                             <br />
                             <br />
                             <br />
-                            <button
-                                className="yes-button mr-1"
-                                onClick={() => parent.setResponse(true)}
-                            >
-                                Yes
+                            <div style={{ textAlign: 'center', marginLeft: '-20px' }}>
+                                <button
+                                    className="yes-button mr-1"
+                                    onClick={() => parent.setResponse(true)}
+                                >
+                                    Yes
                             </button>
 
-                            <button
-                                className="yes-button"
-                                onClick={() => parent.setResponse(false)}
-                            >
-                                No
+                                <button
+                                    className="yes-button"
+                                    onClick={() => parent.setResponse(false)}
+                                >
+                                    No
                             </button>
+                            </div>
                         </h3>
                     </div>
                 </div>

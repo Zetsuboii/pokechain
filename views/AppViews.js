@@ -52,19 +52,31 @@ exports.FundAccount = class extends React.Component {
       <div>
         <h2>Fund account</h2>
         <br />
-        Balance: {bal} {standardUnit}
+        Balance: {bal} ALGO
         <hr />
-        Would you like to fund your account with additional {standardUnit}?
+        Would you like to fund your account with additional ALGO?
         <br />
         (This only works on certain devnets)
         <br />
-        <input
-          type="number"
-          placeholder={defaultFundAmt}
-          onChange={(e) => this.setState({ amt: e.currentTarget.value })}
-        />
-        <button onClick={() => parent.fundAccount(amt)}>Fund Account</button>
-        <button onClick={() => parent.skipFundAccount()}>Skip</button>
+        <br />
+        <div className="container mt-5">
+          <div className="row j-center">
+            <div className="mr-12 text-center">
+              <input
+                type="number"
+                placeholder={defaultFundAmt}
+                onChange={(e) => this.setState({ amt: e.currentTarget.value })}
+                step="0.0000001"
+                className="cost-input"
+                style={{ marginRight: '10px' }}
+              /> ALGO
+              <div style={{ marginTop: '20px', }} >
+                <button className="fund-button" onClick={() => parent.fundAccount(amt)}>Fund Account</button>
+                <button className="fund-button" onClick={() => parent.skipFundAccount()}>Skip</button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

@@ -45,7 +45,6 @@ export const main =
                             transfer(price).to(Creator);
                             continue;
                         })
-                    // XXX Another example of a place I don't really care about no timeout
                     .timeout(1024, () => {
                         Creator.publish();
                         continue;

@@ -20,7 +20,7 @@ exports.Wrapper = class extends React.Component {
         const { content } = this.props;
         return (
             <div className="Player">
-                <h2 className="header-main-sub">Player</h2>
+                <h2 style={{ marginLeft: '50px' }} className="header-main-sub">Player</h2>
                 {content}
             </div>
         );
@@ -88,7 +88,7 @@ exports.GetMove = class extends React.Component {
         return (
             <Fragment>
                 <div className="container flex-column align-items-center mt-3">
-                    <div className="row gameboy">
+                    <div style={{ width: '60vw' }} className="row gameboy">
                         <div style={{ width: "20vw", marginRight: "1rem" }}>
                             <div className="row flex-row j-center">
                                 {this.state.move === 1 ? (
@@ -274,21 +274,28 @@ exports.GetMove = class extends React.Component {
                         </div>
                     </div>
                     <div className="flex-row mt-2" style={{ width: "50vw" }}>
+                        <div className="container mt-5">
+                            <div className="row j-center">
+                                <div className="mr-12 text-center">
+                                    <button
+                                        className="yes-button-2"
+                                        style={{ marginLeft: '110px' }}
+                                        onClick={() =>
+                                            parent.setMove(this.state.move)
+                                        }
+                                    >
+                                        Set Move
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
 
-                        <button
-                            className="yes-button-2"
-                            onClick={() =>
-                                parent.setMove(this.state.move)
-                            }
-                        >
-                            Set Move
-                        </button>
-                        <button
+                        {/* <button
                             className="yes-button-2"
                             onClick={() => parent.setMove(0)}
                         >
                             Skip This Turn
-                        </button>
+                        </button> */}
                     </div>
                     <p>
                         Last Move: {lastMove == 0 ? 'Skipped' : moveList[lastMove - 1]}

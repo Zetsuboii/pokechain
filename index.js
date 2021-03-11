@@ -72,14 +72,14 @@ class Player extends React.Component {
         const move = await new Promise(resolveMoveP => {
             this.setState({ view: 'GetMove', lastMove: this.state.lastMove, resolveMoveP });
         });
-        return move;
+        return this.sendMove(move);
     }
     setMove(move) { this.state.resolveMoveP(move); }
 
     async seeMove(move) {
         console.log('See move is called');
-        this.sendMove(move);
         console.log('Exited sendMove');
+        this.setState({ lastMove: move });
         console.log(`View: ${this.state.view}`);
     }
 
@@ -96,7 +96,7 @@ class Player extends React.Component {
                 }
             );
             console.log(`Response from server:\n${res.data}`);
-            this.setState({ lastMove: move });
+            return move;
         }
         catch (err) {
             console.error(`Error while sending the move:\n${err}`);

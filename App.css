@@ -1,4 +1,13 @@
+@font-face {
+  font-family: Amiable;
+  src: url(perfectly\ amiable.ttf);
+}
+
 body {
+  margin: 25px;
+  font-family: Amiable, Arial, Helvetica, sans-serif;
+  font-size: 25px;
+  letter-spacing: 0.7px;
   background: #fafafa;
   overflow-x: hidden;
 }
@@ -66,13 +75,18 @@ textarea {
   transition: 0.2s linear;
   border: 2px solid #032352;
 }
+.attach-button:active {
+  background: #091424;
+  color: white;
+  transition: 0.05s linear;
+  }
 
 .m-auto {
   margin: auto;
 }
 .subtext {
   color: #032352;
-  font-size: 18px;
+  font-size: 22px;
 }
 .observer-input {
   height: 30px;
@@ -83,13 +97,13 @@ textarea {
   text-align: center;
   justify-content: center;
   color: #032352;
-  font-size: 25px;
+  font-size: 35px;
   cursor: pointer;
 }
 
 .selectRole {
   font-weight: 400;
-  font-size: 24px;
+  font-size: 30px;
   color: #032352;
 }
 .text-center {
@@ -104,7 +118,7 @@ textarea {
   padding-right: 38px;
   border: 1px solid #032352;
   cursor: pointer;
-  font-size: 24px;
+  font-size: 30px;
   transition: 0.2s linear;
 }
 .selectButton:hover {
@@ -113,8 +127,13 @@ textarea {
   color: #032352;
   transition: 0.2s linear;
 }
+.selectButton:active {
+  background: #091424;
+  color: white;
+  transition: 0.05s linear;
+}
 .select-subtext {
-  font-size: 20px;
+  font-size: 25px;
   color: #032352;
 }
 
@@ -140,6 +159,11 @@ textarea {
   color: #032352;
   transition: 0.2s linear;
 }
+.yes-button:active {
+  background: #091424;
+  color: white;
+  transition: 0.05s linear;
+  }
 
 .yes-button-2 {
   background: #032352;
@@ -158,6 +182,11 @@ textarea {
   color: #032352;
   transition: 0.2s linear;
 }
+.yes-button-2:active {
+  background: #091424;
+  color: white;
+  transition: 0.05s linear;
+  }
 
 /* MARGINS  */
 .mb-1 {
@@ -316,4 +345,30 @@ textarea {
   justify-content: center;
   background: red;
   color: white;
+}
+
+.fund-button {
+  color: white;
+  background-color: #032352;
+  border-radius: 10px;
+  margin: 5px;
+  padding: 10px;
+  border: 2px solid #032352;
+  font-size: 25px;
+  transition: 0.2s linear;
+}
+.fund-button:hover {
+background: none;
+border: 1px solid #032352;
+color: #032352;
+transition: 0.2s linear;
+}
+.fund-button:active {
+background: #091424;
+color: white;
+transition: 0.05s linear;
+}
+
+.cost-input {
+  width: 100px;
 }
