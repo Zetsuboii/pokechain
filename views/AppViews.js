@@ -45,6 +45,15 @@ exports.ConnectAccount = class extends React.Component {
 };
 
 exports.FundAccount = class extends React.Component {
+  state = {
+    isOpen: true,
+  };
+
+  handleClick = (amt) => {
+    this.setState({ isOpen: !this.state.isOpen });
+    parent.fundAccount(amt);
+  };
+
   render() {
     const { bal, standardUnit, defaultFundAmt, parent } = this.props;
     const amt = (this.state || {}).amt || defaultFundAmt;
@@ -68,11 +77,29 @@ exports.FundAccount = class extends React.Component {
                 onChange={(e) => this.setState({ amt: e.currentTarget.value })}
                 step="0.0000001"
                 className="cost-input"
-                style={{ marginRight: '10px' }}
-              /> ALGO
-              <div style={{ marginTop: '20px', }} >
-                <button className="fund-button" onClick={() => parent.fundAccount(amt)}>Fund Account</button>
-                <button className="fund-button" onClick={() => parent.skipFundAccount()}>Skip</button>
+                style={{ marginRight: "10px" }}
+              />{" "}
+              ALGO
+              <div style={{ marginTop: "20px" }}>
+                {this.state.isOpen ? (
+                  <button
+                    className="fund-button"
+                    onClick={() => {
+                      this.setState({ isOpen: !this.state.isOpen });
+                      parent.fundAccount(amt);
+                    }}
+                  >
+                    Fund Account
+                  </button>
+                ) : (
+                  <button className="fund-button-passive">Fund Account</button>
+                )}
+                <button
+                  className="fund-button"
+                  onClick={() => parent.skipFundAccount()}
+                >
+                  Skip
+                </button>
               </div>
             </div>
           </div>

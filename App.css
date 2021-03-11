@@ -79,7 +79,7 @@ textarea {
   background: #091424;
   color: white;
   transition: 0.05s linear;
-  }
+}
 
 .m-auto {
   margin: auto;
@@ -163,7 +163,7 @@ textarea {
   background: #091424;
   color: white;
   transition: 0.05s linear;
-  }
+}
 
 .yes-button-2 {
   background: #032352;
@@ -186,7 +186,7 @@ textarea {
   background: #091424;
   color: white;
   transition: 0.05s linear;
-  }
+}
 
 /* MARGINS  */
 .mb-1 {
@@ -358,17 +358,38 @@ textarea {
   transition: 0.2s linear;
 }
 .fund-button:hover {
-background: none;
-border: 1px solid #032352;
-color: #032352;
-transition: 0.2s linear;
+  background: none;
+  border: 1px solid #032352;
+  color: #032352;
+  transition: 0.2s linear;
 }
 .fund-button:active {
-background: #091424;
-color: white;
-transition: 0.05s linear;
+  background: #091424;
+  color: white;
+  transition: 0.05s linear;
+}
+.fund-button-passive {
+  color: #032352;
+  background-color: #ededed;
+  border-radius: 10px;
+  margin: 5px;
+  padding: 10px;
+  border: 2px solid #032352;
+  font-size: 25px;
+  transition: 0.2s linear;
 }
 
 .cost-input {
   width: 100px;
+}
+.lastMove {
+  list-style-type: none;
+  padding-left: 0px;
+  text-align: center;
+}
+.lastMove li {
+  color: #032352;
+  font-family: Amiable, Arial, Helvetica, sans-serif;
+  font-size: 30px;
+  margin-top: 0.2rem;
 }
