@@ -1,15 +1,21 @@
 'reach 0.1';
 
+const CommonInterface = {
+    seeEnd: Fun([], Null)
+};
+
 export const main =
     Reach.App(
         {},
         [Participant('Creator',
             {
+                ...CommonInterface,
                 price: UInt,
                 shouldEnd: Fun([], Bool),
             }),
         ParticipantClass('Player',
             {
+                ...CommonInterface,
                 getMove: Fun([], UInt),
                 seeMove: Fun([UInt], Null),
             }),
@@ -51,6 +57,9 @@ export const main =
                     });
             }
             commit();
+            each([Creator, Player], () => {
+                interact.seeEnd();
+            });
 
             exit();
         }
