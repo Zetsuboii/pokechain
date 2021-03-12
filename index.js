@@ -144,7 +144,7 @@ class Creator extends Common {
   constructor(props) {
     super(props);
     if (this.state === undefined) {
-      this.state = { view: "GetParams", game: {} };
+      this.state = { view: "GetParams", game: {}, account: props.account };
     }
   }
   getParams(game) {
@@ -165,8 +165,10 @@ class Creator extends Common {
 
   //? Implement backend functions - Creator
   async shouldEnd() {
+    const balanceBig = await reach.balanceOf(this.state.account);
+    const balance = reach.formatCurrency(balanceBig, 4);
     const response = await new Promise((resolveResponseP) => {
-      this.setState({ view: "GetResponse", resolveResponseP });
+      this.setState({ view: "GetResponse", balance: balance, resolveResponseP });
     });
     console.log(`Creator gave the response ${response}`);
     return response;

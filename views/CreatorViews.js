@@ -136,7 +136,7 @@ exports.WaitingForPlayer = class extends React.Component {
 
 exports.GetResponse = class extends React.Component {
     render() {
-        const { parent } = this.props;
+        const { parent, balance } = this.props;
         return (
             <Fragment>
                 <div className="container">
@@ -144,7 +144,7 @@ exports.GetResponse = class extends React.Component {
                         <h3 className="game-finished">
                             Game is continuing.
                             <br />
-                            <br />
+                            <p>Your balance is {balance}</p>
                             <br />
                             <div style={{ textAlign: 'center', marginLeft: '-20px' }}>
                                 <button
