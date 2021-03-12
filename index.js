@@ -73,7 +73,7 @@ class Common extends React.Component {
 class Player extends Common {
   constructor(props) {
     super(props);
-    this.state = { view: "Attach", moves: [] };
+    this.state = { view: "Attach", moves: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0] };
   }
 
   attach(ctcInfoStr) {
@@ -100,31 +100,31 @@ class Player extends Common {
     this.state.resolveMoveP(move);
   }
 
-  async seeMove(move) {
+  async seeMove(moveList) {
     console.log("See move is called");
     console.log("Exited sendMove");
     var array = [...this.state.moves];
     array.pop();
-    array.push(reach.bigNumberToNumber(move));
+    for (var move in moveList) {
+      array.push(reach.bigNumberToNumber(move));
+    }
     this.setState({ moves: array });
-
-    /* this.setState((prevstate) => ({
-      moves: [...prevstate.moves, reach.bigNumberToNumber(move)],
-    })); */
     console.log(`View: ${this.state.view}`);
   }
 
-  async sendMove(move) {
-    console.log(`Sending the move ${move} to the API.`);
+  async sendMove(moveList) {
+    console.log(`Sending the list ${moveList} to the API.`);
     try {
-      const res = await axios.post("https://pokechain-api.herokuapp.com/", {
-        name: "Move",
-        move: reach.bigNumberToNumber(move),
-        duration: 1,
-        toPay: 1,
-      });
-      console.log(`Response from server:\n${res.data}`);
-      return move;
+      for (var move in moveList) {
+        const res = await axios.post("https://pokechain-api.herokuapp.com/", {
+          name: "Move",
+          move: reach.bigNumberToNumber(move),
+          duration: 1,
+          toPay: 1,
+        });
+        console.log(`Response from server:\n${res.data}`);
+      }
+      return moveList;
     } catch (err) {
       console.error(`Error while sending the move:\n${err}`);
     }

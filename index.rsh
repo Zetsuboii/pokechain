@@ -4,12 +4,15 @@ const CommonInterface = {
     seeEnd: Fun([], Null)
 };
 
-const foldingPrice = (arr, price) => {
-    let result = 0;
-    for (let i = 0; i < arr.length; i++) {
-        result += (i + 1) * price;
-    }
-    return result;
+const cf = (a, i) => a[i] != 0 ? 1 : 0;
+
+const getNonZero = (a) => {
+    return cf(a, 0) + cf(a, 1) + cf(a, 2) + cf(a, 3) + cf(a, 4) +
+        cf(a, 5) + cf(a, 6) + cf(a, 7) + cf(a, 8) + cf(a, 9);
+}
+
+const foldingPrice = (cnt, price) => {
+    return cnt * (cnt + 1) * price;
 };
 
 export const main =
@@ -49,14 +52,15 @@ export const main =
                         })
                     .case(Player, (() => {
                         const msg = declassify(interact.getMove());
-                        const when = msg != 0;
+                        assume(Array.length(msg) == 10);
+                        const when = msg != [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
                         return { msg, when };
                     }),
-                        (v => foldingPrice(v, price)),
+                        (move => foldingPrice(getNonZero(move), price)),
                         (move) => {
                             Player.only(() =>
                                 interact.seeMove(move));
-                            transfer(price).to(Creator);
+                            transfer(foldingPrice(getNonZero(move), price)).to(Creator);
                             continue;
                         })
                     .timeout(1024, () => {
