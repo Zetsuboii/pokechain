@@ -310,7 +310,7 @@ exports.GetMove = class extends React.Component {
             </div>
           </div>
 
-          <span>{this.state.moveQueue.map((item, i) => item == 0 ? (i === 9 ? '-' : '-, ') :
+          <span className="move-list">{this.state.moveQueue.map((item, i) => item == 0 ? (i === 9 ? '-' : '-, ') :
             (i === 9 ? `${moveList[item - 1]}` : `${moveList[item - 1]}, `))}</span>
 
           <div className="flex-row mt-2" style={{ width: "50vw" }}>
@@ -346,6 +346,7 @@ exports.GetMove = class extends React.Component {
             </div>
 
           </div>
+          <p>{balance} ALGO</p>
           <span
             style={{ fontSize: "35px", color: "#032352", marginTop: "1.5rem" }}
           >

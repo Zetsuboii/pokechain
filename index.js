@@ -14,6 +14,8 @@ const { standartUnit } = reach;
 const defaults = { defaultMoveCost: "10", standartUnit };
 const axios = require("axios");
 
+//const sleep = (milliseconds) => new Promise(resolve => setTimeout(resolve, milliseconds));
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -73,7 +75,7 @@ class Common extends React.Component {
 class Player extends Common {
   constructor(props) {
     super(props);
-    this.state = { view: "Attach", prevMoves: [] };
+    this.state = { view: "Attach", prevMoves: [], account: props.account };
   }
 
   attach(ctcInfoStr) {
@@ -84,10 +86,14 @@ class Player extends Common {
 
   //? Implement backend functions - Player
   async getMove() {
+    const balanceBig = await reach.balanceOf(this.state.account);
+    const balance = reach.formatCurrency(balanceBig, 4);
+    console.log(`balance is ${balance}`);
     const move = await new Promise((resolveMoveP) => {
       this.setState({
         view: "GetMove",
         prevMoves: this.state.prevMoves,
+        balance: balance,
         resolveMoveP,
       });
     });
@@ -115,18 +121,14 @@ class Player extends Common {
   async sendMove(moveList) {
     console.log(`Sending the list ${moveList} to the API.`);
     try {
-      moveList.forEach(async (move) => {
-        if (move !== 0) {
-          const res = await axios.post("https://pokechain-api.herokuapp.com/", {
-            name: "Move",
-            move: reach.bigNumberToNumber(move),
-            duration: 1,
-            toPay: 1,
-          });
-          console.log(`Response from server:`);
-          console.log(res.data);
-        }
+      const res = await axios.post("https://pokechain-api.herokuapp.com/", {
+        name: "Move",
+        move: moveList,
+        duration: 1,
+        toPay: 1,
       });
+      console.log(`Response from server:`);
+      console.log(res.data);
       return moveList;
     } catch (err) {
       console.error(`Error while sending the move:\n${err}`);
@@ -154,7 +156,7 @@ class Creator extends Common {
     this.setState({ view: "Deploying", ctc });
 
     //* Set start values
-    this.price = this.state.game.price;
+    this.price = reach.parseCurrency(this.state.game.price);
 
     backend.Creator(ctc, this);
     const ctcInfoStr = JSON.stringify(await ctc.getInfo(), null, 2);

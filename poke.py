@@ -48,13 +48,17 @@ def game_control():
     while True:
         if last_id != player_move["id"]:
             try:
-                input_move = player_move["move"]-1
-                input_word = BINDINGS[input_move]
+                input_list = player_move["move"]
                 for _ in range(player_move["duration"]):
-                    print(f"Simulating {input_word}")
-                    pyautogui.keyDown(BINDINGS_KEYBOARD[input_word])
-                    pyautogui.keyUp(BINDINGS_KEYBOARD[input_word])
-                    time.sleep(1)
+                    print(
+                        "------------------------------------\nRESET LOOP\n---------------------------------------")
+                    for move in input_list:
+                        if move != 0:
+                            input_word = BINDINGS[move - 1]
+                            print(f"Simulating {input_word}")
+                            pyautogui.keyDown(BINDINGS_KEYBOARD[input_word])
+                            pyautogui.keyUp(BINDINGS_KEYBOARD[input_word])
+                            time.sleep(0.2)
                 last_id = player_move["id"]
             except Exception as e:
                 print(f"[ERROR] while applying the input: {e}")

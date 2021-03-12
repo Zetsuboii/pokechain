@@ -12,7 +12,7 @@ const getNonZero = (a) => {
 }
 
 const foldingPrice = (cnt, price) => {
-    return cnt * (cnt + 1) * price;
+    return (cnt * (cnt + 1) * price) / 2;
 };
 
 export const main =

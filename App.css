@@ -384,6 +384,8 @@ textarea {
 }
 .lastMove {
   height: 200px;
+  width: 200px;
+  overflow: auto;
   list-style-type: none;
   padding-left: 0px;
   text-align: center;
@@ -393,4 +395,10 @@ textarea {
   font-family: Amiable, Arial, Helvetica, sans-serif;
   font-size: 30px;
   margin-top: 0.2rem;
+}
+
+.move-list {
+  margin-top: 20px;
+  border: black solid 1px;
+  padding: 10px;
 }
