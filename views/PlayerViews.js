@@ -79,13 +79,13 @@ exports.GetMove = class extends React.Component {
     super(props);
     this.state = {
       move: 0,
-      moveQueue: [],
+      moveQueue: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       index: 0
     };
   }
 
   render() {
-    const { parent, moves } = this.props;
+    const { parent, prevMoves, balance } = this.props;
     const moveList = [
       "Up",
       "Down",
@@ -100,10 +100,9 @@ exports.GetMove = class extends React.Component {
       "Loading...",
     ];
 
-    console.log(moves);
-    const displayMoves = moves.map((item, index) => (
-      <li key={index}>{moveList[item - 1]}</li>
-    ));
+    const displayMoves = prevMoves.map((item, index) => {
+      return (<li key={index}>{moveList[item - 1]}</li>);
+    });
 
     const setMove = (move) => {
       this.setState({ move: move });
@@ -119,7 +118,7 @@ exports.GetMove = class extends React.Component {
     }
 
     const clearQueue = () => {
-      this.setState({ moveQueue: [], index: 0 });
+      this.setState({ moveQueue: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], index: 0 });
     }
 
     return (
@@ -131,14 +130,14 @@ exports.GetMove = class extends React.Component {
                 {this.state.move === 1 ? (
                   <button
                     className="square-selected mb-1"
-                    onClick={setMove(1)}
+                    onClick={() => setMove(1)}
                   >
                     <img src={ARROWUP} width="25" height="25" />
                   </button>
                 ) : (
                   <button
                     className="square mb-1"
-                    onClick={setMove(1)}
+                    onClick={() => setMove(1)}
                   >
                     {" "}
                     <img src={ARROWUP} width="25" height="25" />
@@ -149,14 +148,14 @@ exports.GetMove = class extends React.Component {
                 {this.state.move === 3 ? (
                   <button
                     className="square-selected mr-1"
-                    onClick={setMove(3)}
+                    onClick={() => setMove(3)}
                   >
                     <img src={ARROWLEFT} width="25" height="25" />
                   </button>
                 ) : (
                   <button
                     className="square mr-1"
-                    onClick={setMove(3)}
+                    onClick={() => setMove(3)}
                   >
                     {" "}
                     <img src={ARROWLEFT} width="25" height="25" />
@@ -165,14 +164,14 @@ exports.GetMove = class extends React.Component {
                 {this.state.move === 2 ? (
                   <button
                     className="square-selected"
-                    onClick={setMove(2)}
+                    onClick={() => setMove(2)}
                   >
                     <img src={ARROWDOWN} width="25" height="25" />
                   </button>
                 ) : (
                   <button
                     className="square"
-                    onClick={setMove(2)}
+                    onClick={() => setMove(2)}
                   >
                     {" "}
                     <img src={ARROWDOWN} width="25" height="25" />
@@ -181,14 +180,14 @@ exports.GetMove = class extends React.Component {
                 {this.state.move === 4 ? (
                   <button
                     className="square-selected ml-1"
-                    onClick={setMove(4)}
+                    onClick={() => setMove(4)}
                   >
                     <img src={ARROWRIGHT} width="25" height="25" />
                   </button>
                 ) : (
                   <button
                     className="square ml-1"
-                    onClick={setMove(4)}
+                    onClick={() => setMove(4)}
                   >
                     {" "}
                     <img src={ARROWRIGHT} width="25" height="25" />
@@ -201,14 +200,14 @@ exports.GetMove = class extends React.Component {
                 {this.state.move === 5 ? (
                   <button
                     className="circle-selected mb-1"
-                    onClick={setMove(5)}
+                    onClick={() => setMove(5)}
                   >
                     <img src={ABUTTON} width="18" height="18" />
                   </button>
                 ) : (
                   <button
                     className="circle mb-1"
-                    onClick={setMove(5)}
+                    onClick={() => setMove(5)}
                   >
                     <img src={ABUTTON} width="18" height="18" />
                   </button>
@@ -218,14 +217,14 @@ exports.GetMove = class extends React.Component {
                 {this.state.move === 6 ? (
                   <button
                     className="circle-selected mr-1"
-                    onClick={setMove(6)}
+                    onClick={() => setMove(6)}
                   >
                     <img src={BBUTTON} width="18" height="18" />
                   </button>
                 ) : (
                   <button
                     className="circle mr-1"
-                    onClick={setMove(6)}
+                    onClick={() => setMove(6)}
                   >
                     {" "}
                     <img src={BBUTTON} width="18" height="18" />
@@ -238,14 +237,14 @@ exports.GetMove = class extends React.Component {
                 {this.state.move === 7 ? (
                   <button
                     className="circle-selected mb-1"
-                    onClick={setMove(7)}
+                    onClick={() => setMove(7)}
                   >
                     <img src={LBUTTON} width="18" height="18" />
                   </button>
                 ) : (
                   <button
                     className="circle mb-1"
-                    onClick={setMove(7)}
+                    onClick={() => setMove(7)}
                   >
                     <img src={LBUTTON} width="18" height="18" />
                   </button>
@@ -255,14 +254,14 @@ exports.GetMove = class extends React.Component {
                 {this.state.move === 8 ? (
                   <button
                     className="circle-selected mr-1"
-                    onClick={setMove(8)}
+                    onClick={() => setMove(8)}
                   >
                     <img src={RBUTTON} width="18" height="18" />
                   </button>
                 ) : (
                   <button
                     className="circle mr-1"
-                    onClick={setMove(8)}
+                    onClick={() => setMove(8)}
                   >
                     {" "}
                     <img src={RBUTTON} width="18" height="18" />
@@ -275,14 +274,14 @@ exports.GetMove = class extends React.Component {
                 {this.state.move === 9 ? (
                   <button
                     className="circle-start-select"
-                    onClick={setMove(9)}
+                    onClick={() => setMove(9)}
                   >
                     START
                   </button>
                 ) : (
                   <button
                     className="circle-start"
-                    onClick={setMove(9)}
+                    onClick={() => setMove(9)}
                   >
                     START
                   </button>
@@ -294,14 +293,14 @@ exports.GetMove = class extends React.Component {
                 {this.state.move === 10 ? (
                   <button
                     className="circle-start-select"
-                    onClick={setMove(10)}
+                    onClick={() => setMove(10)}
                   >
                     SELECT
                   </button>
                 ) : (
                   <button
                     className="circle-start"
-                    onClick={setMove(10)}
+                    onClick={() => setMove(10)}
                   >
                     {" "}
                     SELECT
@@ -311,7 +310,8 @@ exports.GetMove = class extends React.Component {
             </div>
           </div>
 
-          <span>{this.state.moveQueue.map((item, i) => (<p>{moveList[item - 1]}</p>))}</span>
+          <span>{this.state.moveQueue.map((item, i) => item == 0 ? (i === 9 ? '-' : '-, ') :
+            (i === 9 ? `${moveList[item - 1]}` : `${moveList[item - 1]}, `))}</span>
 
           <div className="flex-row mt-2" style={{ width: "50vw" }}>
             <div className="container mt-5">
@@ -319,29 +319,28 @@ exports.GetMove = class extends React.Component {
                 <div className="mr-12 text-center">
                   <button
                     className="yes-button-2"
-                    style={{ marginLeft: "110px" }}
-                    onClick={() => parent.setMove(this.state.moveQueue)}
+                    style={{ marginLeft: "110px", marginBottom: "15px" }}
+                    onClick={() => addToQueue(this.state.move)}
+                  >
+                    Add Move
+                  </button>
+                  <button
+                    className="yes-button-2"
+                    style={{ marginLeft: "110px", marginBottom: "15px" }}
+                    onClick={() => clearQueue()}
+                  >
+                    Clear List
+                  </button>
+                  <button
+                    className="yes-button-2"
+                    style={{ marginLeft: "110px", marginBottom: "15px" }}
+                    onClick={() => {
+                      console.log(this.state.moveQueue);
+                      parent.setMove(this.state.moveQueue);
+                    }}
                   >
                     Set Move
                   </button>
-                  <div className="mr-12 text-center">
-                    <button
-                      className="yes-button-2"
-                      style={{ marginLeft: "110px" }}
-                      onClick={addToQueue(this.state.move)}
-                    >
-                      Add Move
-                  </button>
-                  </div>
-                  <div className="mr-12 text-center">
-                    <button
-                      className="yes-button-2"
-                      style={{ marginLeft: "110px" }}
-                      onClick={clearQueue()}
-                    >
-                      Clear List
-                  </button>
-                  </div>
                 </div>
               </div>
             </div>
@@ -370,34 +369,5 @@ exports.SeeEnd = class extends React.Component {
     );
   }
 };
-
-
-// exports.SeeMove = class extends React.Component {
-//   render() {
-//     const { parent, move } = this.props;
-//     const moveList = [
-//       "Up",
-//       "Down",
-//       "Left",
-//       "Right",
-//       "A Button",
-//       "B Button",
-//       "Left Trigger",
-//       "Right Trigger",
-//       "Start",
-//       "Select",
-//       "Loading...",
-//     ];
-//     return (
-//       <Fragment>
-//         <div className="container">
-//           <div className="row j-center">
-//             <h3 className="game-finished">Played {moveList[move - 1]}</h3>
-//           </div>
-//         </div>
-//       </Fragment>
-//     );
-//   }
-// };
 
 export default exports;

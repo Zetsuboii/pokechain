@@ -142,7 +142,7 @@ exports.GetResponse = class extends React.Component {
                 <div className="container">
                     <div className="row j-center">
                         <h3 className="game-finished">
-                            Do you want to continue the game?
+                            Game is continuing.
                             <br />
                             <br />
                             <br />
@@ -151,15 +151,15 @@ exports.GetResponse = class extends React.Component {
                                     className="yes-button mr-1"
                                     onClick={() => parent.setResponse(true)}
                                 >
-                                    Yes
+                                    End the Game
                             </button>
-
+                                {/* 
                                 <button
                                     className="yes-button"
                                     onClick={() => parent.setResponse(false)}
                                 >
                                     No
-                            </button>
+                            </button> */}
                             </div>
                         </h3>
                     </div>

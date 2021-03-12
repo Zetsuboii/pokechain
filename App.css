@@ -383,6 +383,7 @@ textarea {
   width: 100px;
 }
 .lastMove {
+  height: 200px;
   list-style-type: none;
   padding-left: 0px;
   text-align: center;

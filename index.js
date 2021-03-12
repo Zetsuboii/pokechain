@@ -73,7 +73,7 @@ class Common extends React.Component {
 class Player extends Common {
   constructor(props) {
     super(props);
-    this.state = { view: "Attach", moves: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0] };
+    this.state = { view: "Attach", prevMoves: [] };
   }
 
   attach(ctcInfoStr) {
@@ -84,10 +84,11 @@ class Player extends Common {
 
   //? Implement backend functions - Player
   async getMove() {
+    const balance = await reach.balanceOf(this.state.acc);
     const move = await new Promise((resolveMoveP) => {
       this.setState({
         view: "GetMove",
-        moves: this.state.moves,
+        prevMoves: this.state.prevMoves,
         resolveMoveP,
       });
     });
@@ -95,35 +96,38 @@ class Player extends Common {
   }
   setMove(move) {
     this.setState((prevstate) => ({
-      moves: [...prevstate.moves, 11],
+      prevMoves: [...prevstate.prevMoves, 11],
     }));
     this.state.resolveMoveP(move);
   }
 
   async seeMove(moveList) {
-    console.log("See move is called");
-    console.log("Exited sendMove");
-    var array = [...this.state.moves];
+    var array = [...this.state.prevMoves];
     array.pop();
-    for (var move in moveList) {
-      array.push(reach.bigNumberToNumber(move));
-    }
-    this.setState({ moves: array });
-    console.log(`View: ${this.state.view}`);
+    moveList.forEach(move => {
+      if (reach.bigNumberToNumber(move) !== 0) {
+        array.push(reach.bigNumberToNumber(move));
+      }
+    });
+    console.log(`moveQueue is ${this.state.prevMoves}`);
+    this.setState({ prevMoves: array });
   }
 
   async sendMove(moveList) {
     console.log(`Sending the list ${moveList} to the API.`);
     try {
-      for (var move in moveList) {
-        const res = await axios.post("https://pokechain-api.herokuapp.com/", {
-          name: "Move",
-          move: reach.bigNumberToNumber(move),
-          duration: 1,
-          toPay: 1,
-        });
-        console.log(`Response from server:\n${res.data}`);
-      }
+      moveList.forEach(async (move) => {
+        if (move !== 0) {
+          const res = await axios.post("https://pokechain-api.herokuapp.com/", {
+            name: "Move",
+            move: reach.bigNumberToNumber(move),
+            duration: 1,
+            toPay: 1,
+          });
+          console.log(`Response from server:`);
+          console.log(res.data);
+        }
+      });
       return moveList;
     } catch (err) {
       console.error(`Error while sending the move:\n${err}`);
