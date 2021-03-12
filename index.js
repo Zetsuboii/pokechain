@@ -64,7 +64,13 @@ class App extends React.Component {
   }
 }
 
-class Player extends React.Component {
+class Common extends React.Component {
+  async seeEnd() {
+    this.setState({ view: "SeeEnd" });
+  }
+}
+
+class Player extends Common {
   constructor(props) {
     super(props);
     this.state = { view: "Attach", moves: [] };
@@ -129,7 +135,7 @@ class Player extends React.Component {
   }
 }
 
-class Creator extends React.Component {
+class Creator extends Common {
   constructor(props) {
     super(props);
     if (this.state === undefined) {

@@ -169,4 +169,17 @@ exports.GetResponse = class extends React.Component {
     }
 };
 
+exports.SeeEnd = class extends React.Component {
+    render() {
+        return (
+            <div className="container">
+                <div className="row j-center">
+                    <h3 className="game-finished">You ended the game.</h3>
+                </div>
+            </div>
+        );
+    }
+};
+
+
 export default exports;

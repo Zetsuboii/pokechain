@@ -326,32 +326,45 @@ exports.GetMove = class extends React.Component {
   }
 };
 
-exports.SeeMove = class extends React.Component {
+exports.SeeEnd = class extends React.Component {
   render() {
-    const { parent, move } = this.props;
-    const moveList = [
-      "Up",
-      "Down",
-      "Left",
-      "Right",
-      "A Button",
-      "B Button",
-      "Left Trigger",
-      "Right Trigger",
-      "Start",
-      "Select",
-      "Loading...",
-    ];
     return (
-      <Fragment>
-        <div className="container">
-          <div className="row j-center">
-            <h3 className="game-finished">Played {moveList[move - 1]}</h3>
-          </div>
+      <div className="container">
+        <div className="row j-center">
+          <h3 className="game-finished">Game ended by the Creator.</h3>
         </div>
-      </Fragment>
+      </div>
     );
   }
 };
+
+
+// exports.SeeMove = class extends React.Component {
+//   render() {
+//     const { parent, move } = this.props;
+//     const moveList = [
+//       "Up",
+//       "Down",
+//       "Left",
+//       "Right",
+//       "A Button",
+//       "B Button",
+//       "Left Trigger",
+//       "Right Trigger",
+//       "Start",
+//       "Select",
+//       "Loading...",
+//     ];
+//     return (
+//       <Fragment>
+//         <div className="container">
+//           <div className="row j-center">
+//             <h3 className="game-finished">Played {moveList[move - 1]}</h3>
+//           </div>
+//         </div>
+//       </Fragment>
+//     );
+//   }
+// };
 
 export default exports;
