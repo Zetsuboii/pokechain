@@ -79,6 +79,7 @@ exports.GetMove = class extends React.Component {
     super(props);
     this.state = {
       move: 0,
+      moveQueue: [],
     };
   }
 
@@ -102,6 +103,12 @@ exports.GetMove = class extends React.Component {
     const displayMoves = moves.map((item, index) => (
       <li key={index}>{moveList[item - 1]}</li>
     ));
+
+    const setMove = (move) => {
+      this.setState((state) => {
+        moveQueue: [...state.moveQueue, move]
+      });
+    };
 
     return (
       <Fragment>

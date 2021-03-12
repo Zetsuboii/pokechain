@@ -4,6 +4,14 @@ const CommonInterface = {
     seeEnd: Fun([], Null)
 };
 
+const foldingPrice = (arr, price) => {
+    let result = 0;
+    for (let i = 0; i < arr.length; i++) {
+        result += (i + 1) * price;
+    }
+    return result;
+};
+
 export const main =
     Reach.App(
         {},
@@ -16,8 +24,8 @@ export const main =
         ParticipantClass('Player',
             {
                 ...CommonInterface,
-                getMove: Fun([], UInt),
-                seeMove: Fun([UInt], Null),
+                getMove: Fun([], Array(UInt, 10)),
+                seeMove: Fun([Array(UInt, 10)], Null),
             }),
         ],
         (Creator, Player) => {
@@ -44,7 +52,7 @@ export const main =
                         const when = msg != 0;
                         return { msg, when };
                     }),
-                        (_ => price),
+                        (v => foldingPrice(v, price)),
                         (move) => {
                             Player.only(() =>
                                 interact.seeMove(move));
