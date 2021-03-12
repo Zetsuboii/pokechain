@@ -84,7 +84,6 @@ class Player extends Common {
 
   //? Implement backend functions - Player
   async getMove() {
-    const balance = await reach.balanceOf(this.state.acc);
     const move = await new Promise((resolveMoveP) => {
       this.setState({
         view: "GetMove",
