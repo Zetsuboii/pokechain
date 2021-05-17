@@ -1,13 +1,12 @@
 # Pokéchain
 
-##  Pokémon played by Twitch Chat powered with Blockchain w/ Reach
+##  Pokémon game played by users all around world, developed with Reach on Algorand
 
-Hybrid of two seperate projects:
+Pokéchain is a blockchain game project where a Creator creates a data stream and user contribute to it by paying a fixed price.
+Same principle can be applied for all data-stream applications, blogs, queues, feeds; you name it.
 
-- Pokemon played by a Twitch chat.
+It has 3 separate components:
 
-  Nothing fancy, a very common project in these days.
-
-* Validating the chat utilizing Blockchain technology
-
-  Some thought process needed here :)
+- Pokechain-API: Receives POST calls with move attached and shares this information with GET calls (In an another repository called Pokechain-API)
+- poke.py: Calls Pokechain-API and plays the move if there is a new move
+- Pokechain: The main component of the game: Holds a Reach smart contract where a Creator creates a data stream and many Players send a move 
